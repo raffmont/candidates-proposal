@@ -22,13 +22,7 @@ function filter_post_content($content)
 {
       // Get the post id
       $post_id = get_the_ID();
-
-      /*
-      if (is_single() &&  
-            metadata_exists('post', $post_id, 'role') &&
-            metadata_exists('post', $post_id, 'institution')
-            )
-      */     
+ 
       if ( is_singular( 'candidate' ) )
       {
             
@@ -38,12 +32,12 @@ function filter_post_content($content)
             $website = get_post_meta($post_id, 'website')[0];
             
             ob_start();
-            include MY_PLUGIN_PATH . '/includes/templates/candidates-proposal-post-script.php';
+            include MY_PLUGIN_PATH . '/includes/candidate-post-type-script.php';
             $script = ob_get_contents();
             ob_end_clean();
 
             ob_start();
-            include MY_PLUGIN_PATH . '/includes/templates/candidates-proposal-post.html';
+            include MY_PLUGIN_PATH . '/includes/templates/candidate-post-type.html';
             $content = ob_get_contents();
             ob_end_clean();
 

@@ -12,7 +12,7 @@ add_action('wp_footer', 'candidates_proposal_form_load_scripts');
 
 function candidates_proposal_form_load_scripts()
 {
-      include MY_PLUGIN_PATH . '/includes/templates/candidates-proposal-form-script.php';
+      include MY_PLUGIN_PATH . '/includes/candidates-proposal-form-script.php';
 }
 
 function candidates_proposal_form_shortcode_show()
