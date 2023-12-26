@@ -1,5 +1,12 @@
 <script>
-(function($) {
+jQuery(document).ready(function($)
+{
+      // Fill roles /wp-json/wp/v2/categories?parent=8
+      // <?php echo get_rest_url(null, "v2/categories"); ?>
+
+      // Fill institutions /wp-json/wp/v2/categories?parent=9
+
+
       $("#candidates-proposal-plugin-proposal-form").submit(
             function(event)
             {
@@ -22,7 +29,7 @@
                   {
                         method: 'POST',
                         url: '<?php echo get_rest_url(null, "v1/candidates-proposal-form/submit"); ?>',
-                        headers: { 'X-WP-Nonce': '<?php echo wp_create_nonce("wp_rest"); ?>' },
+                        headers: { 'x-wp-nonce': '<?php echo wp_create_nonce("wp_rest"); ?>' },
                         dataType: 'json',
                         data: data,
                         cache: false,
@@ -44,22 +51,5 @@
                   });
             }
       );
-
-      function candidates_proposal_plugin_vote(url) {
-            console.log(url)
-            $.getJSON( url, {  }).done(function( data ) {
-                  console.log(data);
-                  $("#votes").html(data["count"]);      
-            });
-      }
-      
-      function candidates_proposal_plugin_votes(url) {
-            console.log(url)
-            $.getJSON( url, {  }).done(function( data ) {
-                  console.log(data);
-                  $("#votes").html(data["count"]);       
-            });
-      }
-
-}, jQuery)
+});
 </script>

@@ -1,12 +1,10 @@
-<?php  if( get_plugin_options('candidates_proposal_plugin_active') ):?>
+
 
 <div id="candidates-proposal-plugin-container" style="background-color:gray; color:#000;">
       <div id="candidates-proposal-plugin-form-success" style="background-color:green; color:#fff;"></div>
       <div id="candidates-proposal-plugin-form-error" style="background-color:red; color:#fff;"></div>
 
       <form id="candidates-proposal-plugin-proposal-form" enctype="multipart/form-data">
-            <?php wp_nonce_field('wp_rest');?>
-            <input type="hidden" id="candidates-proposal-plugin-rest_url" name="rest_url" value="<?php echo get_rest_url(null, 'v1/candidates-proposal-form/submit');?>">
             <label>Name</label><br />
             <input type="text" id="candidates-proposal-plugin-name" name="name"><br/>
             <label>Role</label><br />
@@ -36,10 +34,5 @@
             <button type="submit">Propose</button>
       </form>
       
-<?php else:?>
-
-      <p>This form is not active</p>
-
-<?php endif;?>
 </div>
 
