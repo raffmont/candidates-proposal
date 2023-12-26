@@ -130,6 +130,9 @@ function candidates_proposal_form_submit($data)
             return new WP_Rest_Response("Post not updated", 422);
       }
 
+      // Remove shortbio from paramaters
+      unset($params['name']);
+      unset($params['shortbio']);
 
       // Loop through each field posted and sanitize it
       foreach ($params as $label => $value) {
@@ -144,18 +147,11 @@ function candidates_proposal_form_submit($data)
                         $value = $institution_term_id;
                         break;
 
-                  case 'shortbio':
-
-                        $value = sanitize_textarea_field($value);
-                        break;
-
                   case 'website':
-
                         $value = sanitize_url($value);
                         break;
 
                   default:
-
                         $value = sanitize_text_field($value);
             }
 

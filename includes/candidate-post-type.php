@@ -8,9 +8,20 @@ add_action('init', 'candidate_post_type_create');
 
 add_action('add_meta_boxes', 'create_meta_box');
 
-add_filter('manage_candidate_posts_columns', 'custom_candidate_columns');
+add_filter('manage_candidate_posts_columns', 'candidate_post_type_posts_columns');
 
-add_action('manage_candidate_posts_custom_column', 'fill_candidate_columns', 10, 2);
+add_action('manage_candidate_posts_custom_column', 'candidate_post_type_posts_custom_colum', 10, 2);
+
+add_filter('manage_edit-candidate_sortable_columns', 'candidate_post_type_sortable_columns' );
+
+function candidate_post_type_sortable_columns( $columns ) {
+
+	$columns['role'] = 'role';
+      $columns['institution'] = 'institution';
+      $columns['votes'] = 'votes';
+      $columns['website'] = 'website';
+	return $columns;
+}
 
 add_action('admin_init', 'setup_search');
 
@@ -30,6 +41,13 @@ function filter_post_content($content)
             $institution_term_id = get_post_meta($post_id, 'institution')[0];
             $shortbio = $content;
             $website = get_post_meta($post_id, 'website')[0];
+
+            ob_start();
+            include MY_PLUGIN_PATH . '/includes/templates/candidate-post-type-register-first.html';
+            $register_first = ob_get_contents();
+            ob_end_clean();
+
+            $register_first = str_replace("\n","",$register_first);
             
             ob_start();
             include MY_PLUGIN_PATH . '/includes/candidate-post-type-script.php';
@@ -71,14 +89,15 @@ function candidate_search_override($search, $query)
 
       global $wpdb;
 
-      if ($query->is_main_query() && !empty($query->query['s'])) {
+      if ($query->is_main_query() && !empty($query->query['s']))
+      {
             $sql    = "
-              or exists (
+                  or exists (
                   select * from {$wpdb->postmeta} where post_id={$wpdb->posts}.ID
-                  and meta_key in ('name','shortbio','website')
+                  and meta_key in ('name','website')
                   and meta_value like %s
-              )
-          ";
+                  )
+            ";
             $like   = '%' . $wpdb->esc_like($query->query['s']) . '%';
             $search = preg_replace(
                   "#\({$wpdb->posts}.post_title LIKE [^)]+\)\K#",
@@ -90,17 +109,13 @@ function candidate_search_override($search, $query)
       return $search;
 }
 
-function fill_candidate_columns($column, $post_id)
+function candidate_post_type_posts_custom_colum($column, $post_id)
 {
       global $wpdb;
 
       // Return meta data for individual posts on table
 
       switch ($column) {
-
-            case 'name':
-                  echo esc_html(get_post_meta($post_id, 'name', true));
-                  break;
 
             case 'role':
                   echo esc_html(get_cat_name(get_post_meta($post_id, 'role', true)));
@@ -125,17 +140,21 @@ function fill_candidate_columns($column, $post_id)
             case 'website':
                   echo esc_html(get_post_meta($post_id, 'website', true));
                   break;
+
+            // Just break out of the switch statement for everything else. 
+		default :
+                  break;
       }
 }
 
-function custom_candidate_columns($columns)
+function candidate_post_type_posts_columns($columns)
 {
       // Edit the columns for the candidate table
 
       $columns = array(
 
             'cb' => $columns['cb'],
-            'name' => __('Name', 'candidates-proposal-plugin'),
+            'title' => __('Candidate', 'candidates-proposal-plugin'),
             'role' => __('Role', 'candidates-proposal-plugin'),
             'institution' => __('Institution', 'candidates-proposal-plugin'),
             'votes' => __('Votes', 'candidates-proposal-plugin'),
@@ -185,7 +204,6 @@ function display_candidate()
 
       echo '<ul>';
 
-      echo '<li><strong>Name:</strong><br />' . esc_html(get_post_meta($post_id, 'name', true)) . '</li>';
       echo '<li><strong>Role:</strong><br />' . esc_html(get_cat_name(get_post_meta($post_id, 'role', true))) . '</li>';
       echo '<li><strong>Institution:</strong><br />' . esc_html(get_cat_name(get_post_meta($post_id, 'institution', true))) . '</li>';
       echo '<li><strong>Votes:</strong><br /> ' . esc_html($rowcount) . '</li>';
@@ -310,34 +328,37 @@ function handle_vote($data)
       // Get all parameters from form
       $params = $data->get_params();
 
-      do_action( 'inspect', [ 'params', $params, __FILE__, __LINE__ ] );
-
       // Get the voted post id
       $post_id = $params["post"];
 
       // Get the vote table name
       $table_name = $wpdb->base_prefix . "vote_table";
 
+      // Set the minimum time in days between two votes
+      $days = get_plugin_options('candidates_proposal_plugin_days');
+
       // By default, cast the vote with nol kimits
       $rowcount = 0;
 
       // Apply limits
-      if (get_plugin_options('candidates_proposal_plugin_voting_limits')) {
+      if ($days>0) {
 
             // One vote per user per candidate
             $sql = "SELECT COUNT(*) FROM $table_name WHERE post_id = $post_id AND user_id = $user_id";
-
-            // Set the minimum time between two votes
-            $time_difference = get_plugin_options('candidates_proposal_plugin_voting_limits_time_delta_days');
-
+ 
             // One user per candidate within a time difference
-            $sql .= "AND datediff('" . current_time( 'mysql' ) . "', 'time') < $time_difference";
+            //$sql .= " AND datediff('" . current_time( 'mysql' ) . "', 'time') < $days";
+            $sql .= " AND DATE($table_name.time) = DATE_SUB(CURDATE(), INTERVAL $days DAY)";
 
             // Finalize the sql string
             $sql .= ";";
 
+            do_action( 'inspect', [ 'sql', $sql, __FILE__, __LINE__ ] );
+
             // Count the votes for post_id
             $rowcount = $wpdb->get_var($sql);
+
+            do_action( 'inspect', [ 'rowcount', $rowcount, __FILE__, __LINE__ ] );
 
       }
 

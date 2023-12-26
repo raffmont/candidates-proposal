@@ -36,9 +36,7 @@ function candidates_proposal_plugin_post_post_vote(post_id)
             } else if (data["user"] == 0 )
             {
                 $("#candidates_proposal_plugin_post_error").
-                html(
-                    'Register <a href="/wp-login.php">[here]</a> before casting your vote!'
-                    ).fadeIn();
+                html('<?php echo $register_first; ?>').fadeIn();
             } else
             {
                 $("#candidates_proposal_plugin_post_error").html("Vote not casted!").fadeIn();
