@@ -48,6 +48,14 @@ function filter_post_content($content)
             ob_end_clean();
 
             $register_first = str_replace("\n","",$register_first);
+
+            ob_start();
+            include MY_PLUGIN_PATH . '/includes/templates/candidate-post-type-time-between-votes.html';
+            $time_between_votes = ob_get_contents();
+            ob_end_clean();
+
+            $time_between_votes = str_replace("\n","",$time_between_votes);
+            
             
             ob_start();
             include MY_PLUGIN_PATH . '/includes/candidate-post-type-script.php';
@@ -334,32 +342,20 @@ function handle_vote($data)
       // Get the vote table name
       $table_name = $wpdb->base_prefix . "vote_table";
 
-      // Set the minimum time in days between two votes
-      $days = get_plugin_options('candidates_proposal_plugin_days');
+      // Set the minimum time in seconds between two votes
+      $secs = intval(get_plugin_options('secs'));
 
       // By default, cast the vote with nol kimits
       $rowcount = 0;
 
       // Apply limits
-      if ($days>0) {
+      if ($secs>0) {
 
             // One vote per user per candidate
-            $sql = "SELECT COUNT(*) FROM $table_name WHERE post_id = $post_id AND user_id = $user_id";
- 
-            // One user per candidate within a time difference
-            //$sql .= " AND datediff('" . current_time( 'mysql' ) . "', 'time') < $days";
-            $sql .= " AND DATE($table_name.time) = DATE_SUB(CURDATE(), INTERVAL $days DAY)";
-
-            // Finalize the sql string
-            $sql .= ";";
-
-            do_action( 'inspect', [ 'sql', $sql, __FILE__, __LINE__ ] );
+            $sql = "SELECT COUNT(*) FROM $table_name WHERE post_id = $post_id AND user_id = $user_id AND (NOW()-$table_name.time) < $secs;";
 
             // Count the votes for post_id
             $rowcount = $wpdb->get_var($sql);
-
-            do_action( 'inspect', [ 'rowcount', $rowcount, __FILE__, __LINE__ ] );
-
       }
 
       // Check if no vote has been casted by the same user in the time difference
@@ -371,7 +367,7 @@ function handle_vote($data)
                   "INSERT INTO $table_name (post_id, user_id, time) VALUES ( %d, %d, %s )",
                   $post_id,
                   $user_id,
-                  current_time( 'mysql' )
+                  current_time( 'mysql', true )
                   )
                   
             );

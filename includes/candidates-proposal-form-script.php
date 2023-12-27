@@ -15,7 +15,7 @@ jQuery(document).ready(function($)
       $.getJSON(
         '<?php echo get_rest_url(null, "wp/v2/categories"); ?>',
         {
-                parent: 8
+                parent: <?php echo get_plugin_options('roles')?>
         }
         ).done(
             function( data )
@@ -30,7 +30,7 @@ jQuery(document).ready(function($)
       $.getJSON(
         '<?php echo get_rest_url(null, "wp/v2/categories"); ?>',
         {
-                parent: 9
+                parent: <?php echo get_plugin_options('institutions')?>
         }
         ).done(
             function( data )

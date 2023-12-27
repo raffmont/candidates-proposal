@@ -39,7 +39,7 @@ function candidates_proposal_plugin_post_post_vote(post_id)
                 html('<?php echo $register_first; ?>').fadeIn();
             } else
             {
-                $("#candidates_proposal_plugin_post_error").html("Vote not casted!").fadeIn();
+                $("#candidates_proposal_plugin_post_error").html('<?php echo $time_between_votes; ?>').fadeIn();
             }
         },
         error: function(jqXHR, exception){

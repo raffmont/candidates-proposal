@@ -7,7 +7,8 @@ if( !defined('ABSPATH') )
 
 function get_plugin_options($name)
 {
-      return carbon_get_theme_option( $name );
+      $option=get_option( 'candidates_proposal_plugin_options', array() );
+      return $option[$name];
 }
 
   

@@ -19,23 +19,22 @@ function candidates_proposal_form_shortcode_show()
 {
       $html_out = "";
 
-      if (get_plugin_options('candidates_proposal_plugin_active'))
-      {
-            if( is_user_logged_in() ) {
+      
+      if( is_user_logged_in() ) {
 
-                  ob_start();
-                  include MY_PLUGIN_PATH . '/includes/templates/candidates-proposal-form.html';
-                  $html_out = ob_get_contents();
-                  ob_end_clean();
+            ob_start();
+            include MY_PLUGIN_PATH . '/includes/templates/candidates-proposal-form.html';
+            $html_out = ob_get_contents();
+            ob_end_clean();
 
-                  
-            } else {
-                  ob_start();
-                  include MY_PLUGIN_PATH . '/includes/templates/candidates-proposal-form-register-first.html';
-                  $html_out = ob_get_contents();
-                  ob_end_clean();
-            }
+            
+      } else {
+            ob_start();
+            include MY_PLUGIN_PATH . '/includes/templates/candidates-proposal-form-register-first.html';
+            $html_out = ob_get_contents();
+            ob_end_clean();
       }
+      
       return $html_out;
       
 }
@@ -234,7 +233,7 @@ function candidates_proposal_form_submit($data)
       set_post_thumbnail( $post_id, $attachment_id );
 
       // Get the message from the plugin setup
-      $confirmation_message = get_plugin_options('candidates_proposal_plugin_message');
+      $confirmation_message = get_plugin_options('message');
       if ($confirmation_message) {
             // Perform placeholders replacements
             $confirmation_message = str_replace('{name}', $user->display_name, $confirmation_message);
