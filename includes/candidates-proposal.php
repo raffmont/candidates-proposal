@@ -75,16 +75,10 @@ function candidates_proposal_votes_csv($data)
     // Get the params
     $params = $data->get_params();
 
-    do_action( 'inspect', [ 'params', $params, __FILE__, __LINE__ ] );
-
     // Get the nonce
-    $nonce = $params['_wpnonce'];
-
-    do_action( 'inspect', [ 'nonce', $nonce, __FILE__, __LINE__ ] );
+    $nonce = $params['_wpnonce'];    
 
     $user_id = get_current_user_id();
-
-    do_action( 'inspect', [ 'user_id', $user_id, __FILE__, __LINE__ ] );
 
     // Check if the nonce is correct
     if (!wp_verify_nonce($nonce, "wp_rest")) 

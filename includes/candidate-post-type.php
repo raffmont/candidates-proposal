@@ -125,6 +125,10 @@ function candidate_post_type_posts_custom_colum($column, $post_id)
 
       switch ($column) {
 
+            case 'title':
+                  echo esc_html(get_the_title($post_id));
+                  break;
+
             case 'role':
                   echo esc_html(get_cat_name(get_post_meta($post_id, 'role', true)));
                   break;
@@ -253,20 +257,7 @@ function candidate_post_type_rest_api_init()
       register_rest_route('v1/candidates-proposal-post', 'vote', array(
 
             'methods' => 'POST',
-            'callback' => 'handle_vote'/*,
-            'permission_callback' => '__return_true',
-            'args'                => array(
-                  'post' => array(
-                        'validate_callback' => function( $param, $request, $key ) {
-                        return is_numeric( $param );
-                        }
-                  ),
-                  '_wp_nonce' => array(
-                        'validate_callback' => function( $param, $request, $key ) {
-                        return is_string( $param );
-                        }
-                  )
-            )*/
+            'callback' => 'handle_vote'
       ));
 
       // Create endpoint for get votes
