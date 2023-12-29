@@ -6,29 +6,47 @@
 
       <form id="candidates_proposal_form" enctype="multipart/form-data">
 
-            <label for="candidates_proposal_form_name">Name</label><br />
+            <label for="candidates_proposal_form_name">Name</label>
+            <span id="candidates_proposal_form_name_error" style="color: red; display: none;">Name is missing</span>
+            <br />
             <input type="text" id="candidates_proposal_form_name" name="name"><br/>
 
-            <label for="candidates_proposal_form_role">Role</label><br />
+            <label for="candidates_proposal_form_role">Role</label>
+            <span id="candidates_proposal_form_role_error" style="color: red; display: none;">It is mandatory choosing a role</span>
+            <br />
             <select id="candidates_proposal_form_role" name="role">
                   <option value="" default></option>
             </select>
 
-            <label for="candidates_proposal_form_institution">Institution</label><br />
+            <label for="candidates_proposal_form_institution">Institution</label>
+            <span id="candidates_proposal_form_institution_error" style="color: red; display: none;">It is mandatory choosing an institution</span>
+            <br />
             <select id="candidates_proposal_form_institution" name="institution">
                   <option value="" default></option>
             </select>
 
-            <label for="candidates_proposal_form_shortbio">Short Bio</label><br />
+            <label for="candidates_proposal_form_shortbio">Short Bio</label>
+            <span id="candidates_proposal_form_shortbio_error" style="color: red; display: none;">The shortbio is missing</span>
+            <br />
             <textarea id="candidates_proposal_form_shortbio" name="shortbio"></textarea><br />
             
-            <label for="candidates_proposal_form_website">Website</label><br />
+            <label for="candidates_proposal_form_website">Website</label>
+            <span id="candidates_proposal_form_website_error" style="color: red; display: none;">The website is missing</span>
+            <br />
             <input type="text" id="candidates_proposal_form_website" name="website"><br/>
             
-            <label for="candidates_proposal_form_picture">Picture</label><br />
-            <input type="file" id="candidates_proposal_form_picture" name="picture" accept="image/png, image/jpeg" /><br />
+            <label for="candidates_proposal_form_picture">Picture (Max {upload_max_size} bytes)</label>
+            <span id="candidates_proposal_form_picture_erro1" style="color: red; display: none;">The picture is missing</span>
+            <br />
+            <span id="candidates_proposal_form_picture_error2" style="color: red; display: none;">The picture excedes the maximum uploadable image size</span>
+            <br />
+            <input type="file" id="candidates_proposal_form_picture" name="picture" accept="image/png, image/jpeg" /><br/>
+
+            <hr/>
+            <label for="candidates_proposal_form_accept">I do accept the terms about proposining this candidate (check to propose your candidate).</label>
+            <input type="checkbox" id="candidates_proposal_form_accept" name="accept" />
             
-            <button type="submit">Propose</button>
+            <button id="candidates_proposal_form_submit" type="submit" style="display: none;">Propose</button>
       </form>
       
 </div>

@@ -42,6 +42,18 @@ jQuery(document).ready(function($)
             }
       );
 
+      $("#candidates_proposal_form_accept").click(
+            function(event)
+            {
+                  if ($("#candidates_proposal_form_accept").is(":checked"))
+                  {
+                        $("#candidates_proposal_form_submit").show();
+                  } else 
+                  {
+                        $("#candidates_proposal_form_submit").hide();
+                  }
+            }
+      );
 
       $("#candidates_proposal_form").submit(
             function(event)
@@ -50,32 +62,49 @@ jQuery(document).ready(function($)
                   event.preventDefault();
 
                   $("#candidates_proposal_form_error").hide();
+                  $("#candidates_proposal_form_name_error").hide();
+                  $("#candidates_proposal_form_roles_error").hide();
+                  $("#candidates_proposal_form_institution_error").hide();
+                  $("#candidates_proposal_form_shortbio_error").hide();
+                  $("#candidates_proposal_form_website_error").hide();
+                  $("#candidates_proposal_form_picture_error1").hide();
+                  $("#candidates_proposal_form_picture_error2").hide();
 
-                  let message = "";
                   let check = true;
                   if ($("#candidates_proposal_form_name").val() == "") {
                         check = false;
-                        message += "Name is missing<br/>";
+                        $("#candidates_proposal_form_name_error").fadeIn();
                   }
+                  
                   if ($("#candidates_proposal_form_role").val() == "") {
                         check = false;
-                        message += "Role is missing<br/>";
+                        $("#candidates_proposal_form_role_error").fadeIn();
                   }
                   if ($("#candidates_proposal_form_institution").val() == "") {
                         check = false;
-                        message += "Institution is missing<br/>";
+                        $("#candidates_proposal_form_institution_error").fadeIn();
                   }
                   if ($("#candidates_proposal_form_shortbio").val() == "") {
                         check = false;
-                        message += "Shortbio is missing<br/>";
+                        $("#candidates_proposal_form_shortbio_error").fadeIn();
                   }
                   if ($("#candidates_proposal_form_website").val() == "") {
                         check = false;
-                        message += "Website is missing<br/>";
+                        $("#candidates_proposal_form_website_error").fadeIn();
                   }
                   if ($("#candidates_proposal_form_picture").val() == "") {
                         check = false;
-                        message += "Picture is missing<br/>";
+                        $("#candidates_proposal_form_picture_error1").fadeIn();
+                  } else
+                  {
+
+                        let upload_size = $('#candidates_proposal_form_picture')[0].files[0].size;
+                        
+                        if (upload_size >= <?php echo upload_max_size(); ?>)
+                        {
+                              check = false;
+                              $("#candidates_proposal_form_picture_error2").fadeIn();
+                        }
                   }
 
                   if (check)
@@ -113,10 +142,7 @@ jQuery(document).ready(function($)
                                     $("#candidates_proposal_form_error").html(jqXHR.responseText).fadeIn();
                               }
                         });
-                  } else 
-                  {
-                        $("#candidates_proposal_form_error").html(message).fadeIn();
-                  }
+                  } 
             }
       );
 });

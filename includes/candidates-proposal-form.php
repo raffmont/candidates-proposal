@@ -15,6 +15,36 @@ function candidates_proposal_form_load_scripts()
       include MY_PLUGIN_PATH . '/includes/candidates-proposal-form-script.php';
 }
 
+function upload_max_size()
+{
+      $val = ini_get('upload_max_filesize');
+      if (empty($val))
+      {
+            $val = 0;
+      }
+      
+      $val = trim($val);
+      $last = strtolower($val[strlen($val)-1]);
+      $val = floatval($val);
+
+      switch($last) {
+
+            case 'g':
+                  $val *= 1073741824;
+            break;
+
+            case 'm':
+                  $val *= 1048576;
+            break;
+            
+            case 'k':
+                  $val *= 1024;
+            break;
+      }
+
+      return $val;
+}
+
 function candidates_proposal_form_shortcode_show()
 {
       $html_out = "";
@@ -27,7 +57,7 @@ function candidates_proposal_form_shortcode_show()
             $html_out = ob_get_contents();
             ob_end_clean();
 
-            
+            $html_out = str_replace("{upload_max_size}",upload_max_size(),$html_out);
       } else {
             ob_start();
             include MY_PLUGIN_PATH . '/includes/templates/candidates-proposal-form-register-first.html';

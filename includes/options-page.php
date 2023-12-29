@@ -14,29 +14,38 @@ function candidates_proposal_admin_menu_add_settings_page() {
     );
 }
 
-function candidates_proposal_render_settings_page() {
-    ?>
-    <script>
-        function escapeHtml(unsafe)
-      {
-      return unsafe
+function candidates_proposal_render_settings_page()
+{
+?>
+<script>
+    function escapeHtml(unsafe)
+    {
+        return unsafe
             .replace(/&/g, "&amp;")
             .replace(/</g, "&lt;")
             .replace(/>/g, "&gt;")
             .replace(/"/g, "&quot;")
             .replace(/'/g, "&apos;");
-      }
-    </script>
-    <h2>Candidates Proposal Plugin Settings</h2>
-    <form action="options.php" method="post">
-        <?php 
-        settings_fields( 'candidates_proposal_plugin_options' );
-        do_settings_sections( 'candidates_proposal_plugin' ); ?>
-        <input name="submit" class="button button-primary" type="submit" value="<?php esc_attr_e( 'Save' ); ?>" />
-    </form>
-    <hr/>
-    Export votes <button id="candidates_proposal_plugin_export_asCSV">as CSV</button>
-    <?php
+    }
+    
+    jQuery(document).ready(function($)
+    {
+        $("#candidates_proposal_plugin_admin_votes_csv").click(function(event) {
+            event.preventDefault();  //stop the browser from following
+            window.location.href = '<?php echo get_rest_url(null, "v1/candidates-proposal/votes/csv"); ?>?_wpnonce=<?php echo wp_create_nonce("wp_rest"); ?>';
+        });
+    });
+</script>
+<h2>Candidates Proposal Plugin Settings</h2>
+<form action="options.php" method="post">
+    <?php 
+    settings_fields( 'candidates_proposal_plugin_options' );
+    do_settings_sections( 'candidates_proposal_plugin' ); ?>
+    <input name="submit" class="button button-primary" type="submit" value="<?php esc_attr_e( 'Save' ); ?>" />
+</form>
+<hr/>
+Download as <button id="candidates_proposal_plugin_admin_votes_csv">CSV</button><br/>
+<?php
 }
 
 function candidates_proposal_admin_init_register_settings() {

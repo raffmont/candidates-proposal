@@ -14,6 +14,12 @@ add_action('manage_candidate_posts_custom_column', 'candidate_post_type_posts_cu
 
 add_filter('manage_edit-candidate_sortable_columns', 'candidate_post_type_sortable_columns' );
 
+add_action('admin_init', 'setup_search');
+
+add_action('rest_api_init', 'candidate_post_type_rest_api_init');
+
+add_filter( 'the_content', 'filter_post_content', 10 );
+
 function candidate_post_type_sortable_columns( $columns ) {
 
 	$columns['role'] = 'role';
@@ -22,12 +28,6 @@ function candidate_post_type_sortable_columns( $columns ) {
       $columns['website'] = 'website';
 	return $columns;
 }
-
-add_action('admin_init', 'setup_search');
-
-add_action('rest_api_init', 'candidate_post_type_create_rest_endpoints');
-
-add_filter( 'the_content', 'filter_post_content', 10 );
 
 function filter_post_content($content) 
 {
@@ -183,20 +183,7 @@ function create_meta_box()
 
 function display_candidate()
 {
-      // Display individual candidate data on it's page
-
-      // $postmetas = get_post_meta( get_the_ID() );
-
-      // echo '<ul>';
-
-      // foreach($postmetas as $key => $value)
-      // {
-
-      //       echo '<li><strong>' . $key . ':</strong> ' . $value[0] . '</li>';
-
-      // }
-
-      // echo '</ul>';
+      
 
       global $wpdb;
 
@@ -259,14 +246,27 @@ function candidate_post_type_create()
       register_post_type('candidate', $args);
 }
 
-function candidate_post_type_create_rest_endpoints()
+function candidate_post_type_rest_api_init()
 {
 
       // Create endpoint for voting
       register_rest_route('v1/candidates-proposal-post', 'vote', array(
 
             'methods' => 'POST',
-            'callback' => 'handle_vote'
+            'callback' => 'handle_vote'/*,
+            'permission_callback' => '__return_true',
+            'args'                => array(
+                  'post' => array(
+                        'validate_callback' => function( $param, $request, $key ) {
+                        return is_numeric( $param );
+                        }
+                  ),
+                  '_wp_nonce' => array(
+                        'validate_callback' => function( $param, $request, $key ) {
+                        return is_string( $param );
+                        }
+                  )
+            )*/
       ));
 
       // Create endpoint for get votes
@@ -279,11 +279,6 @@ function candidate_post_type_create_rest_endpoints()
                   'post' => array(
                         'validate_callback' => function( $param, $request, $key ) {
                         return is_numeric( $param );
-                        }
-                  ),
-                  '_wp_nonce' => array(
-                        'validate_callback' => function( $param, $request, $key ) {
-                        return is_string( $param );
                         }
                   )
             )
