@@ -49,7 +49,7 @@ if (!class_exists('CandidatesProposalPlugin')) {
             user_id bigint(20) unsigned NOT NULL,
             time datetime DEFAULT '0000-00-00 00:00:00' NOT NULL,
             PRIMARY KEY  (id),
-            FOREIGN KEY  (post_id) REFERENCES wp_posts(ID)
+            FOREIGN KEY  (post_id) REFERENCES {$wpdb->base_prefix}posts(ID)
       ) $charset_collate;";
 
       require_once ABSPATH . 'wp-admin/includes/upgrade.php';
