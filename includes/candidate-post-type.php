@@ -36,6 +36,8 @@ function filter_post_content($content)
  
       if ( is_singular( 'candidate' ) )
       {
+            $options = get_option( 'candidates_proposal_plugin_options', array() );
+            if (!array_key_exists('redirectafterloginorregister',$options)) $options['redirectafterloginorregister']='';
             
             $role_term_id = get_post_meta($post_id, 'role')[0];
             $institution_term_id = get_post_meta($post_id, 'institution')[0];
@@ -47,6 +49,14 @@ function filter_post_content($content)
             $register_first = ob_get_contents();
             ob_end_clean();
 
+            $permalink = '';
+            if ($options['redirectafterloginorregister'] != '')
+            {
+                  $permalink = get_permalink();
+            }
+
+            $register_first = str_replace("{login_url}",esc_url(wp_login_url($permalink)) ,$register_first);
+            $register_first = str_replace("{registration_url}", esc_url(wp_registration_url()), $register_first);
             $register_first = str_replace("\n","",$register_first);
 
             ob_start();
@@ -55,7 +65,6 @@ function filter_post_content($content)
             ob_end_clean();
 
             $time_between_votes = str_replace("\n","",$time_between_votes);
-            
             
             ob_start();
             include MY_PLUGIN_PATH . '/includes/candidate-post-type-script.php';

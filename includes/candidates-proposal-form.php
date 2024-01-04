@@ -47,6 +47,9 @@ function upload_max_size()
 
 function candidates_proposal_form_shortcode_show()
 {
+      $options = get_option( 'candidates_proposal_plugin_options', array() );
+      if (!array_key_exists('redirectafterloginorregister',$options)) $options['redirectafterloginorregister']='';
+            
       $html_out = "";
 
       
@@ -57,12 +60,22 @@ function candidates_proposal_form_shortcode_show()
             $html_out = ob_get_contents();
             ob_end_clean();
 
-            $html_out = str_replace("{upload_max_size}",upload_max_size(),$html_out);
+            $html_out = str_replace("{upload_max_size}",upload_max_size()/1024000,$html_out);
       } else {
             ob_start();
             include MY_PLUGIN_PATH . '/includes/templates/candidates-proposal-form-register-first.html';
             $html_out = ob_get_contents();
             ob_end_clean();
+
+            $permalink = '';
+            if ($options['redirectafterloginorregister'] != '')
+            {
+                  $permalink = get_permalink();
+            }
+
+            $html_out = str_replace("{login_url}",esc_url(wp_login_url($permalink)) ,$html_out);
+            $html_out = str_replace("{registration_url}", esc_url(wp_registration_url()), $html_out);
+            
       }
       
       return $html_out;

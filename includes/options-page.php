@@ -78,6 +78,22 @@ function candidates_proposal_admin_init_register_settings() {
     );
 
     add_settings_field(
+        'candidates_proposal_plugin_setting_emailasusername',
+        'Force email as username',
+        'candidates_proposal_plugin_setting_emailasusername',
+        'candidates_proposal_plugin',
+        'proposal_settings'
+    );
+
+    add_settings_field(
+        'candidates_proposal_plugin_setting_redirectafterloginorregister',
+        'Redirect after login or register',
+        'candidates_proposal_plugin_setting_redirectafterloginorregister',
+        'candidates_proposal_plugin',
+        'proposal_settings'
+    );
+
+    add_settings_field(
         'candidates_proposal_plugin_setting_roles',
         'Roles category',
         'candidates_proposal_plugin_setting_roles',
@@ -120,6 +136,19 @@ function candidates_proposal_plugin_setting_secs() {
     if (!array_key_exists('secs',$options)) $options['secs']=0;
     echo "<input id='candidates_proposal_plugin_setting_secs' name='candidates_proposal_plugin_options[secs]' type='text' value='" . esc_attr( $options['secs'] ) . "' />";
 }
+
+function candidates_proposal_plugin_setting_emailasusername() {
+    $options = get_option( 'candidates_proposal_plugin_options', array() );
+    if (!array_key_exists('emailasusername',$options)) $options['emailasusername']='';
+    echo "<input id='candidates_proposal_plugin_setting_emailasusername' name='candidates_proposal_plugin_options[emailasusername]' type='checkbox' value='1' " . checked( 1, $options['emailasusername'], false ) . " />";
+}
+
+function candidates_proposal_plugin_setting_redirectafterloginorregister() {
+    $options = get_option( 'candidates_proposal_plugin_options', array() );
+    if (!array_key_exists('redirectafterloginorregister',$options)) $options['redirectafterloginorregister']='';
+    echo "<input id='candidates_proposal_plugin_setting_redirectafterloginorregister' name='candidates_proposal_plugin_options[redirectafterloginorregister]' type='checkbox' value='1' " . checked( 1, $options['redirectafterloginorregister'], false ) . " />";
+}
+
 
 function candidates_proposal_plugin_setting_roles() {
     $options = get_option( 'candidates_proposal_plugin_options', array() );

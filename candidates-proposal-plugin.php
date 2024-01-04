@@ -55,7 +55,57 @@ if (!class_exists('CandidatesProposalPlugin')) {
       require_once ABSPATH . 'wp-admin/includes/upgrade.php';
       dbDelta( $sql );
       $is_error = empty( $wpdb->last_error );
-      
+
+      $options = get_option( 'candidates_proposal_plugin_options', array() );
+
+      if (!array_key_exists('emailasusername',$options)) $options['emailasusername']='';
+
+      if ($options['emailasusername'] != '')
+      {
+        // Remove Username textfield
+        add_action('login_head', function()
+        {
+          ?>
+              <style>
+                  #registerform > p:first-child{
+                      display:none;
+                  }
+              </style>
+          
+              <script type="text/javascript" src="<?php echo site_url('/wp-includes/js/jquery/jquery.js'); ?>"></script>
+              <script type="text/javascript">
+                  jQuery(document).ready(function($)
+                  {
+                      $('#registerform > p:first-child').css('display', 'none');
+                  });
+              </script>
+          <?php
+        });
+
+        //Remove error for username, only show error for email only.
+        add_filter('registration_errors', function($wp_error, $sanitized_user_login, $user_email){
+          if(isset($wp_error->errors['empty_username']))
+          {
+              unset($wp_error->errors['empty_username']);
+          }
+
+          if(isset($wp_error->errors['username_exists']))
+          {
+              unset($wp_error->errors['username_exists']);
+          }
+          return $wp_error;
+        }, 10, 3);
+
+        // Manipulate Background Registration Functionality.
+        add_action('login_form_register', function()
+        {
+          if(isset($_POST['user_login']) && isset($_POST['user_email']) && !empty($_POST['user_email']))
+          {
+              $_POST['user_login'] = $_POST['user_email'];
+          }
+        });
+        
+      }
     }
   }
 
