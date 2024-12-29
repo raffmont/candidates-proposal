@@ -36,6 +36,7 @@ if (!class_exists('CandidatesProposalPlugin')) {
       include_once MY_PLUGIN_PATH . "includes/candidates-proposal.php";
       include_once MY_PLUGIN_PATH . "includes/candidate-post-type.php";
       include_once MY_PLUGIN_PATH . "includes/candidates-proposal-form.php";
+      include_once MY_PLUGIN_PATH . "includes/candidates-list.php";
 
       global $wpdb;
 
