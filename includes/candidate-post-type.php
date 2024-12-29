@@ -10,7 +10,7 @@ add_action('add_meta_boxes', 'create_meta_box');
 
 add_filter('manage_candidate_posts_columns', 'candidate_post_type_posts_columns');
 
-add_action('manage_candidate_posts_custom_column', 'candidate_post_type_posts_custom_colum', 10, 2);
+add_action('manage_candidate_posts_custom_column', 'candidate_post_type_posts_custom_column', 10, 2);
 
 add_filter('manage_edit-candidate_sortable_columns', 'candidate_post_type_sortable_columns' );
 
@@ -126,7 +126,7 @@ function candidate_search_override($search, $query)
       return $search;
 }
 
-function candidate_post_type_posts_custom_colum($column, $post_id)
+function candidate_post_type_posts_custom_column($column, $post_id)
 {
       global $wpdb;
 
@@ -335,31 +335,51 @@ function handle_vote($data)
       $post_id = $params["post"];
 
       // Get the vote table name
-      $table_name = $wpdb->base_prefix . "vote_table";
+      $vote_table_name = $wpdb->base_prefix . "vote_table";
+
+      // Get the term relationships table name
+      $term_relationships_table_name = $wpdb->base_prefix . "term_relationships";
 
       // Set the minimum time in seconds between two votes
       $secs = intval(get_plugin_options('secs'));
 
+      // Set the minimum time in seconds between two votes on the same Role
+      $secsRole = intval(get_plugin_options('secsRole'));
+
       // By default, cast the vote with nol kimits
       $rowcount = 0;
 
-      // Apply limits
+      // Apply limits on candidates
       if ($secs>0) {
 
             // One vote per user per candidate
-            $sql = "SELECT COUNT(*) FROM $table_name WHERE post_id = $post_id AND user_id = $user_id AND (NOW()-$table_name.time) < $secs;";
+            $sql = "SELECT COUNT(*) FROM $vote_table_name WHERE post_id = $post_id AND user_id = $user_id AND (NOW()-$vote_table_name.time) < $secs;";
 
             // Count the votes for post_id
-            $rowcount = $wpdb->get_var($sql);
+            $rowcount += $wpdb->get_var($sql);
       }
 
-      // Check if no vote has been casted by the same user in the time difference
+      // Apply limits on roles
+        if ($secsRole>0) {
+
+        // Get the role of the uselected candidate
+        $role_term_id = get_post_meta($post_id, 'role')[0];
+
+        // SELECT COUNT(*) FROM $table_name WHERE role = $params["role"] AND user_id = $user_id AND (NOW()-$table_name.time) < $secsRole>;
+        // One vote per user per role
+        $sql = "SELECT COUNT(*) FROM $vote_table_name INNER JOIN $term_relationships_table_name ON $vote_table_name.post_id=$term_relationships_table_name.object_id WHERE term_taxonomy_id = $role_term_id AND user_id = $user_id AND (NOW()-$vote_table_name.time) < $secsRole;";
+
+        // Count the votes for post_id
+        $rowcount += $wpdb->get_var($sql);
+    }
+
+      // Check if no vote has been cast by the same user in the time difference
       if (is_user_logged_in() && $rowcount == 0)
       {
             // Add a row to the table
             $result = $wpdb->query(
                   $wpdb->prepare(
-                  "INSERT INTO $table_name (post_id, user_id, time) VALUES ( %d, %d, %s )",
+                  "INSERT INTO $vote_table_name (post_id, user_id, time) VALUES ( %d, %d, %s )",
                   $post_id,
                   $user_id,
                   current_time( 'mysql', true )
@@ -369,7 +389,7 @@ function handle_vote($data)
       } 
 
       // Count the votes for post_id
-      $rowcount = $wpdb->get_var("SELECT COUNT(*) FROM $table_name WHERE post_id = $post_id;");
+      $rowcount = $wpdb->get_var("SELECT COUNT(*) FROM $vote_table_name WHERE post_id = $post_id;");
 
       return new WP_Rest_Response([
              "user" => $user_id,

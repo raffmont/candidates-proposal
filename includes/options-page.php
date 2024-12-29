@@ -64,8 +64,16 @@ function candidates_proposal_admin_init_register_settings() {
 
     add_settings_field(
         'candidates_proposal_plugin_setting_secs',
-        'Seconds between two votes casted by the same user to the same candidate',
+        'Seconds between two votes cast by the same user to the same candidate',
         'candidates_proposal_plugin_setting_secs',
+        'candidates_proposal_plugin',
+        'vote_settings'
+    );
+
+    add_settings_field(
+        'candidates_proposal_plugin_setting_secsRole',
+        'Seconds between two votes cast by the same user to the same role',
+        'candidates_proposal_plugin_setting_secsRole',
         'candidates_proposal_plugin',
         'vote_settings'
     );
@@ -135,6 +143,12 @@ function candidates_proposal_plugin_setting_secs() {
     $options = get_option( 'candidates_proposal_plugin_options', array() );
     if (!array_key_exists('secs',$options)) $options['secs']=0;
     echo "<input id='candidates_proposal_plugin_setting_secs' name='candidates_proposal_plugin_options[secs]' type='text' value='" . esc_attr( $options['secs'] ) . "' />";
+}
+
+function candidates_proposal_plugin_setting_secsRole() {
+    $options = get_option( 'candidates_proposal_plugin_options', array() );
+    if (!array_key_exists('secsRole',$options)) $options['secsRole']=0;
+    echo "<input id='candidates_proposal_plugin_setting_secsRole' name='candidates_proposal_plugin_options[secsRole]' type='text' value='" . esc_attr( $options['secsRole'] ) . "' />";
 }
 
 function candidates_proposal_plugin_setting_emailasusername() {
@@ -215,8 +229,3 @@ function candidates_proposal_plugin_setting_message() {
     if (!array_key_exists('message',$options)) $options["message"] = "";
     wp_editor( esc_attr($options['message']), "candidates_proposal_plugin_options[message]", array() );
 }
-
-
-
-
-
