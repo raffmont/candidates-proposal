@@ -20,6 +20,13 @@ add_action('rest_api_init', 'candidate_post_type_rest_api_init');
 
 add_filter( 'the_content', 'filter_post_content', 10 );
 
+add_action('init','add_get_val');
+function add_get_val() {
+    global $wp;
+    $wp->add_query_var('roles');
+    $wp->add_query_var('institutions');
+}
+
 function candidate_post_type_sortable_columns( $columns ) {
 
 	$columns['role'] = 'role';
