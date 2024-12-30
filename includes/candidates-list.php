@@ -12,9 +12,20 @@ add_action('wp_footer', 'candidates_list_load_scripts');
 
 
 
-function candidates_list_shortcode_show()
+function candidates_list_shortcode_show($atts = [], $content = null, $tag = '')
 {
     $options = get_option( 'candidates_proposal_plugin_options', array() );
+
+    // normalize attribute keys, lowercase
+    $atts = array_change_key_case( (array) $atts, CASE_LOWER );
+
+    // override default attributes with user attributes
+    $candidates_list_atts = shortcode_atts(
+        array(
+            'roles' => '',
+            'institutions' => '',
+        ), $atts, $tag
+    );
 
     $html_out = "";
 
@@ -24,9 +35,7 @@ function candidates_list_shortcode_show()
     $html_out = ob_get_contents();
     ob_end_clean();
 
-
     return $html_out;
-
 }
 
 function candidates_list_create_rest_endpoints()
@@ -51,10 +60,19 @@ function candidates_list($data)
     // Get the params
     $params = $data->get_params();
 
-    do_action( 'inspect', [ 'params', $params, __FILE__, __LINE__ ] );
+    $roles = "";
+    if (array_key_exists("roles",$params))
+    {
+        $roles = $params["roles"];
+    }
 
-    // Get the params
-    $params = $data->get_params();
+    $institutions = "";
+    if (array_key_exists("institutions",$params))
+    {
+        $institutions = $params["institutions"];
+    }
+
+
 
 
     global $wpdb;
@@ -89,26 +107,38 @@ function candidates_list($data)
         $role_term_id = get_post_meta($post_id, 'role')[0];
         $institution_term_id = get_post_meta($post_id, 'institution')[0];
 
+        $role_term = get_term( $role_term_id );
+        $institution_term = get_term( $institution_term_id );
 
-        // Count the votes for post->ID
-        $votes = $wpdb->get_var("SELECT COUNT(*) FROM $table_name WHERE post_id = $post_id;");
+        $add_item = true;
+        if (!empty($roles) && strpos($roles, $role_term->slug) === false) {
+            $add_item = false;
+        }
+        if (!empty($institutions) && strpos($institutions, $institution_term->slug) === false) {
+            $add_item = false;
+        }
 
-        $featured_image_id = get_post_thumbnail_id( $post_id );
-        $featured_image_src = wp_get_attachment_image_src( $featured_image_id);
+        if ($add_item) {
+            // Count the votes for post->ID
+            $votes = $wpdb->get_var("SELECT COUNT(*) FROM $table_name WHERE post_id = $post_id;");
 
-        $link = get_permalink($post_id);
+            $featured_image_id = get_post_thumbnail_id($post_id);
+            $featured_image_src = wp_get_attachment_image_src($featured_image_id);
 
-        $candidate = array(
-            'id' => $post_id,
-            'link' => $link,
-            'image' => $featured_image_src[0],
-            'name' => get_the_title(),
-            'role' => get_cat_name( $role_term_id ),
-            'institution' => get_cat_name( $institution_term_id ),
-            'votes' => intval($votes)
-        );
+            $link = get_permalink($post_id);
 
-        array_push($candidates, $candidate);
+            $candidate = array(
+                'id' => $post_id,
+                'link' => $link,
+                'image' => $featured_image_src[0],
+                'name' => get_the_title(),
+                'role' => get_cat_name($role_term_id),
+                'institution' => get_cat_name($institution_term_id),
+                'votes' => intval($votes)
+            );
+
+            array_push($candidates, $candidate);
+        }
 
     endwhile;
 
@@ -117,16 +147,7 @@ function candidates_list($data)
     wp_reset_postdata();
 
     return rest_ensure_response( $jsondata );
-/*
-    $response = new WP_REST_Response;
 
-
-    // Image exists, prepare a binary-data response.
-    $response->set_data( json_encode($jsondata) ); ;
-    $response->set_headers( [ 'Content-Type'   => 'application/json; charset=utf-8' ] );
-
-
-    return $response;*/
 }
 
 function candidates_list_load_scripts()
@@ -155,6 +176,36 @@ function candidates_list_load_scripts()
     ob_end_clean();
 
     $time_between_votes = str_replace("\n","",$time_between_votes);
+
+    ob_start();
+    include MY_PLUGIN_PATH . '/includes/templates/candidates-list-header.html';
+    $list_header = ob_get_contents();
+    ob_end_clean();
+
+    ob_start();
+    include MY_PLUGIN_PATH . '/includes/templates/candidates-list-item.html';
+    $list_item = ob_get_contents();
+    ob_end_clean();
+
+    ob_start();
+    include MY_PLUGIN_PATH . '/includes/templates/candidates-list-footer.html';
+    $list_footer = ob_get_contents();
+    ob_end_clean();
+
+    $list_header = str_replace("\n", "", $list_header);
+    $list_item = str_replace("\n", "", $list_item);
+    $list_footer = str_replace("\n", "", $list_footer);
+
+    $roles="";
+    $institutions="";
+
+    if ( get_query_var('roles') ) {
+        $roles = get_query_var('roles');
+    }
+
+    if ( get_query_var('institutions') ) {
+        $institutions = get_query_var('institutions');
+    }
 
     include MY_PLUGIN_PATH . '/includes/candidates-list-script.php';
 }
