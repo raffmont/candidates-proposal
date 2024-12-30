@@ -3,37 +3,44 @@
     {
         // Fill roles /wp-json/wp/v2/categories?parent=8
         $.getJSON(
-            '<?php echo get_rest_url(null, "v1/candidates/list"); ?>', {}
+            '<?php echo get_rest_url(null, "v1/candidates/list"); ?>',
+            {
+                "roles": "<?php echo $roles; ?>",
+                "institutions": "<?php echo $institutions; ?>",
+            },
         ).done(
             function( data ) {
                 let candidates = data["candidates"]
 
                 candidates.sort((a, b) => b.votes - a.votes)
 
+                let htmlBody =  '<?php echo $list_header; ?>'
                 candidates.forEach(function(item, index) {
-                    $("#candidates_proposal_list_table_votes > tbody:last-child").append(
-                        '<tr>' +
-                        '<td><img src="' + item.image + '"/></td>' +
-                        '<td>' + candidates_proposal_escapeHtml(item.name) + '</td>' +
-                        '<td>' + candidates_proposal_escapeHtml(item.role) + '</td>' +
-                        '<td>' + candidates_proposal_escapeHtml(item.institution) + '</td>' +
-                        '<td><span id="candidates_proposal_list_votes_'+item.id+'">' + item.votes + '</span></td>' +
-                        '<td><button onclick="candidates_proposal_list_vote('+item.id+')">Vote!</button>' +
-                        '<td><a href="' + item.link + '">[link]</td>' +
-                        '</tr>'
-                    );
+                    let htmlItem = '<?php echo $list_item; ?>';
+                    htmlItem = htmlItem.replaceAll("{image}", item.image);
+                    htmlItem = htmlItem.replaceAll("{name}", candidates_proposal_escapeHtml(item.name));
+                    htmlItem = htmlItem.replaceAll("{role}", candidates_proposal_escapeHtml(item.role));
+                    htmlItem = htmlItem.replaceAll("{institution}", candidates_proposal_escapeHtml(item.institution));
+                    htmlItem = htmlItem.replaceAll("{votes}", '<span id="candidates_proposal_list_votes_'+item.id+'">' + item.votes + '</span>');
+                    htmlItem = htmlItem.replaceAll("{vote}", '<button onclick="candidates_proposal_list_vote('+item.id+')">Vote!</button>');
+                    htmlItem = htmlItem.replaceAll("{link}", item.link);
+
+                    htmlBody += htmlItem + "\n";
                 });
+                htmlBody +=  '<?php echo $list_footer; ?>'
+                console.log(htmlBody)
+                $("#candidates_proposal_list_body").html(htmlBody);
             }
         );
     });
 
     function candidates_proposal_escapeHtml(unsafe) {
         return unsafe
-            .replace(/&/g, "&amp;")
-            .replace(/</g, "&lt;")
-            .replace(/>/g, "&gt;")
-            .replace(/"/g, "&quot;")
-            .replace(/'/g, "&apos;");
+            .replaceAll(/&/g, "&amp;")
+            .replaceAll(/</g, "&lt;")
+            .replaceAll(/>/g, "&gt;")
+            .replaceAll(/"/g, "&quot;")
+            .replaceAll(/'/g, "&apos;");
     }
 
     function candidates_proposal_list_vote(id) {
