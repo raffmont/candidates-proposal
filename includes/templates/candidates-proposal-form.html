@@ -1,53 +1,62 @@
-
-
-<div id="candidates_proposal_form_container" style="background-color:gray; color:#000;">
+<div id="candidates_proposal_form_container" style="background-color:lighgray; color:#000;">
       <div id="candidates_proposal_form_success" style="background-color:green; color:#fff;"></div>
       <div id="candidates_proposal_form_error" style="background-color:red; color:#fff;"></div>
 
       <form id="candidates_proposal_form" enctype="multipart/form-data">
 
-            <label for="candidates_proposal_form_name">Name</label>
-            <span id="candidates_proposal_form_name_error" style="color: red; display: none;">Name is missing</span>
-            <br />
-            <input type="text" id="candidates_proposal_form_name" name="name"><br/>
+            <label for="candidates_proposal_form_name">Nome Cognome</label>
+            <span id="candidates_proposal_form_name_error" style="color: red; display: none;">Il campo Nome Cognome è obbligatorio</span>
+            <br/><input type="text" id="candidates_proposal_form_name" name="name"><br/>
 
-            <label for="candidates_proposal_form_role">Role</label>
-            <span id="candidates_proposal_form_role_error" style="color: red; display: none;">It is mandatory choosing a role</span>
-            <br />
+            <br/><label for="candidates_proposal_form_role">Categoria</label>
+            <span id="candidates_proposal_form_role_error" style="color: red; display: none;"><br/>Il campo Categoria è obbligatorio</span>
             <select id="candidates_proposal_form_role" name="role">
                   <option value="" default></option>
             </select>
-
-            <label for="candidates_proposal_form_institution">Institution</label>
-            <span id="candidates_proposal_form_institution_error" style="color: red; display: none;">It is mandatory choosing an institution</span>
-            <br />
+            <br/>
+            <br/><label for="candidates_proposal_form_institution">Ateneo</label>
+            <span id="candidates_proposal_form_institution_error" style="color: red; display: none;"><br/>Il campo Ateneo è obbligatorio</span>
             <select id="candidates_proposal_form_institution" name="institution">
                   <option value="" default></option>
             </select>
+            <br/>
+            <br/><label for="candidates_proposal_form_shortbio">Biografia/notizie sul candidato/a</label>
+            <span id="candidates_proposal_form_shortbio_error" style="color: red; display: none;"><br/>Il campo Biografia/notizie sul candidato/a è obbligatorio</span>
+            <br/><textarea id="candidates_proposal_form_shortbio" name="shortbio"></textarea><br/>
 
-            <label for="candidates_proposal_form_shortbio">Short Bio</label>
-            <span id="candidates_proposal_form_shortbio_error" style="color: red; display: none;">The shortbio is missing</span>
-            <br />
-            <textarea id="candidates_proposal_form_shortbio" name="shortbio"></textarea><br />
-            
-            <label for="candidates_proposal_form_website">Website</label>
-            <span id="candidates_proposal_form_website_error" style="color: red; display: none;">The website is missing</span>
-            <br />
+            <br/><label for="candidates_proposal_form_website">Pagina Web</label>
+            <span id="candidates_proposal_form_website_error" style="color: red; display: none;">Il campo Pagina Web/Social è obbligatorio</span>
             <input type="text" id="candidates_proposal_form_website" name="website"><br/>
-            
-            <label for="candidates_proposal_form_picture">Picture (Max {upload_max_size} bytes)</label>
-            <span id="candidates_proposal_form_picture_erro1" style="color: red; display: none;">The picture is missing</span>
-            <br />
-            <span id="candidates_proposal_form_picture_error2" style="color: red; display: none;">The picture excedes the maximum uploadable image size</span>
-            <br />
-            <input type="file" id="candidates_proposal_form_picture" name="picture" accept="image/png, image/jpeg" /><br/>
 
+            <br/><label class="fa-brands fa-facebook-f" for="candidates_proposal_form_social_facebook"></label>
+            <span id="candidates_proposal_form_social_facebook_error" style="color: red; display: none;">Il campo Social è obbligatorio</span>
+            <input type="text" id="candidates_proposal_form_social_facebook" name="social_facebook"><br/>
+
+            <br/><label class="fa-brands fa-instagram" for="candidates_proposal_form_social_instagram"></label>
+            <span id="candidates_proposal_form_social_instagram_error" style="color: red; display: none;">Il campo Social è obbligatorio</span>
+            <input type="text" id="candidates_proposal_form_social_instagram" name="social_instagram"><br/>
+
+            <br/><label class="fa-brands fa-x-twitter" for="candidates_proposal_form_social_x"></label>
+            <span id="candidates_proposal_form_social_x_error" style="color: red; display: none;">Il campo Social è obbligatorio</span>
+            <input type="text" id="candidates_proposal_form_social_x" name="social_x"><br/>
+
+            <br/><label class="fa-brands fa-linkedin" for="candidates_proposal_form_social_linkedin"></label>
+            <span id="candidates_proposal_form_social_linkedin_error" style="color: red; display: none;">Il campo Social è obbligatorio</span>
+            <input type="text" id="candidates_proposal_form_social_linkedin" name="social_x"><br/>
+
+            <br/><label class="fa-brands fa-tiktok" for="candidates_proposal_form_social_tiktok"></label>
+            <span id="candidates_proposal_form_social_tiktok_error" style="color: red; display: none;">Il campo Social è obbligatorio</span>
+            <input type="text" id="candidates_proposal_form_social_tiktok" name="social_x"><br/>
+
+            <br/>
+            <label for="candidates_proposal_form_picture">Foto (Max {upload_max_size} MB, dimensione minima consigliata 200x200px)</label>
+            <span id="candidates_proposal_form_picture_error1" style="color: red; display: none;"><br/>Il campo Foto è obbligatorio</span>
+            <span id="candidates_proposal_form_picture_error2" style="color: red; display: none;"><br/>L'immagine è troppo grande, la dimensione massima è 2MB</span>
+            <br/><input type="file" id="candidates_proposal_form_picture" name="picture" accept="image/png, image/jpeg" />
             <hr/>
-            <label for="candidates_proposal_form_accept">I do accept the terms about proposining this candidate (check to propose your candidate).</label>
+            <label for="candidates_proposal_form_accept">Autorizzo il trattamento dei dati trasmessi ai sensi del Dlgs. 196/2003.</label>
             <input type="checkbox" id="candidates_proposal_form_accept" name="accept" />
-            
-            <button id="candidates_proposal_form_submit" type="submit" style="display: none;">Propose</button>
-      </form>
-      
-</div>
 
+            <button id="candidates_proposal_form_submit" type="submit" disabled>Invia</button>
+      </form>
+</div>

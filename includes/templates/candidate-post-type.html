@@ -1,16 +1,27 @@
 <div class="role_instituition">
-    <p>{role}</p>
-    <p>{institution}</p>
+    <p>{role}, {institution}</p>
 </div>
+<div class="votes">Voti ottenuti:
+    <span style="font-size:20px" id="candidates_proposal_plugin_post_votes"></span>
+</div>
+<br>
+<p>
+    <button id="candidates_proposal_plugin_post_vote" style="background-color:red; color:#fff;">Vota per me!</button>
+</p>
 <div class="shortbio">{shortbio}</div>
-<p>
-    <a href="{website}" target="_new">[website]</a>
-</p>
-<div class="votes">
-    <span id="candidates_proposal_plugin_post_votes"></span>
-</div>
-<p>
-    <button id="candidates_proposal_plugin_post_vote">Vote for me!</button> 
-</p>
+<a id="website" style="display: none" href="{website}" target="_new">[Sito web]</a>
+<a id="social_facebook" style="display: none" href="{social_facebook}" target="_new"><i class="fa-brands fa-facebook-f"></i></a>
+<a id="social_instagram" style="display: none" href="{social_instagram}" target="_new"><i class="fa-brands fa-instagram"></i></a>
+<a id="social_x" style="display: none" href="{social_x}" target="_new"><i class="fa-brands fa-x-twitter"></i></a>
+<a id="social_linkedin" style="display: none" href="{social_linkedin}" target="_new"><i class="fa-brands fa-linkedin"></i></a>
+<a id="social_tiktok" style="display: none" href="{social_tiktok}" target="_new"><i class="fa-brands fa-tiktok"></i></a>
 <div id="candidates_proposal_plugin_post_error" style="background-color:red; color:#fff;"></div>
-            
+
+<script>
+    if ( $('#website').attr('href') !== '' ) $('#website').show();
+    if ( $('#social_facebook').attr('href') !== '' ) $('#social_facebook').show();
+    if ( $('#social_instagram').attr('href') !== '' ) $('#social_instagram').show();
+    if ( $('#social_x').attr('href') !== '' ) $('#social_x').show();
+    if ( $('#social_linkedin').attr('href') !== '' ) $('#social_linkedin').show();
+    if ( $('#social_tiktok').attr('href') !== '' ) $('#social_tiktok').show();
+</script>

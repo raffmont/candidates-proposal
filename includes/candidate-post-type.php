@@ -32,7 +32,7 @@ function candidate_post_type_sortable_columns( $columns ) {
 	$columns['role'] = 'role';
       $columns['institution'] = 'institution';
       $columns['votes'] = 'votes';
-      $columns['website'] = 'website';
+      // $columns['website'] = 'website';
 	return $columns;
 }
 
@@ -50,6 +50,12 @@ function filter_post_content($content)
             $institution_term_id = get_post_meta($post_id, 'institution')[0];
             $shortbio = $content;
             $website = get_post_meta($post_id, 'website')[0];
+
+            $social_facebook = get_post_meta($post_id, 'social_facebook')[0];
+            $social_instagram= get_post_meta($post_id, 'social_instagram')[0];
+            $social_x= get_post_meta($post_id, 'social_x')[0];
+            $social_linkedin= get_post_meta($post_id, 'social_linkedin')[0];
+            $social_tiktok= get_post_meta($post_id, 'social_tiktok')[0];
 
             ob_start();
             include MY_PLUGIN_PATH . '/includes/templates/candidate-post-type-register-first.html';
@@ -87,7 +93,13 @@ function filter_post_content($content)
             $content = str_replace("{role}",get_cat_name( $role_term_id ),$content);
             $content = str_replace("{institution}",get_cat_name( $institution_term_id ),$content);
             $content = str_replace("{shortbio}",$shortbio, $content);
+
             $content = str_replace("{website}",$website, $content);
+            $content = str_replace("{social_facebook}",$social_facebook, $content);
+            $content = str_replace("{social_instagram}",$social_instagram, $content);
+            $content = str_replace("{social_x}",$social_x, $content);
+            $content = str_replace("{social_linkedin}",$social_linkedin, $content);
+            $content = str_replace("{social_tiktok}",$social_tiktok, $content);
 
             $content = $script . "\n" . $content;
       }

@@ -125,7 +125,11 @@ function candidates_proposal_form_submit($data)
       $field_shortbio = sanitize_email($params['shortbio']);
       $field_website = sanitize_text_field($params['website']);
 
-      
+      $field_social_facebook = sanitize_text_field($params['social_facebook']);
+      $field_social_instagram = sanitize_text_field($params['social_instagram']);
+      $field_social_x = sanitize_text_field($params['social_x']);
+      $field_social_linkedin = sanitize_text_field($params['social_linkedin']);
+      $field_social_tiktok = sanitize_text_field($params['social_tiktok']);
 
       // Remove unneeded data from paramaters
       unset($params['_wpnonce']);
@@ -189,11 +193,16 @@ function candidates_proposal_form_submit($data)
                         $value = $institution_term_id;
                         break;
 
-                  case 'website':
+                case 'social_facebook':
+                case 'social_instagram':
+                case 'social_x':
+                case 'social_linkedin':
+                case 'social_tiktok':
+                case 'website':
                         $value = sanitize_url($value);
                         break;
 
-                  default:
+                default:
                         $value = sanitize_text_field($value);
             }
 

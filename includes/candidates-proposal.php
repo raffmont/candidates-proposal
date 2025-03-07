@@ -4,6 +4,11 @@ if (!defined('ABSPATH')) {
     die('You cannot be here');
 }
 
+function preload_styles() {
+    echo '<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css">';
+}
+
+add_action( 'wp_head','preload_styles', 10);
 
 add_action('wp_enqueue_scripts', 'candidates_proposal_scripts_enqueue');
 

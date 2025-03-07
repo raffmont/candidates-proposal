@@ -47,10 +47,11 @@ jQuery(document).ready(function($)
             {
                   if ($("#candidates_proposal_form_accept").is(":checked"))
                   {
-                        $("#candidates_proposal_form_submit").show();
+                      // ToDo: Check if all the mandatory fields are ok
+                      $("#candidates_proposal_form_submit").removeAttr("disabled");
                   } else 
                   {
-                        $("#candidates_proposal_form_submit").hide();
+                      $("#candidates_proposal_form_submit").attr("disabled", "disabled");
                   }
             }
       );
@@ -88,10 +89,12 @@ jQuery(document).ready(function($)
                         check = false;
                         $("#candidates_proposal_form_shortbio_error").fadeIn();
                   }
+                  /*
                   if ($("#candidates_proposal_form_website").val() == "") {
                         check = false;
                         $("#candidates_proposal_form_website_error").fadeIn();
                   }
+                  */
                   if ($("#candidates_proposal_form_picture").val() == "") {
                         check = false;
                         $("#candidates_proposal_form_picture_error1").fadeIn();

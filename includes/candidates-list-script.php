@@ -63,15 +63,18 @@
                     } else if (data["user"] === 0 )
                     {
                         $("#candidates_proposal_list_error").html('<?php echo $register_first; ?>').fadeIn();
+                        window.scrollTo(0,0)
                         console.log("Vote not valid: register first!")
                     } else
                     {
                         $("#candidates_proposal_list_error").html('<?php echo $time_between_votes; ?>').fadeIn();
+                        window.scrollTo(0,0)
                         console.log("Vote not valid: too much votes!")
                     }
                 },
                 error: function(jqXHR, exception){
                     $("#candidates_proposal_list_error").html(jqXHR.responseText).fadeIn();
+                    window.scrollTo(0,0)
                     console.log("Vote not valid:" + jqXHR.responseText)
                 }
             });
