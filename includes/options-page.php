@@ -63,6 +63,14 @@ function candidates_proposal_admin_init_register_settings() {
     );
 
     add_settings_field(
+        'candidates_proposal_plugin_setting_mode',
+        'Plugin Mode',
+        'candidates_proposal_plugin_setting_mode',
+        'candidates_proposal_plugin',
+        'vote_settings'
+    );
+
+    add_settings_field(
         'candidates_proposal_plugin_setting_secs',
         'Seconds between two votes cast by the same user to the same candidate',
         'candidates_proposal_plugin_setting_secs',
@@ -139,6 +147,14 @@ function candidates_proposal_plugin_section_proposal_text() {
     echo '<p>Here you can set all the options about the proposal</p>';
 }
 
+function candidates_proposal_plugin_setting_mode() {
+    $options = get_option( 'candidates_proposal_plugin_options', array() );
+    if (!array_key_exists('mode',$options)) $options['mode']=1;
+    if ($options['mode']==1) $sel_1="selected"; else $sel_1="";
+    if ($options['mode']==2) $sel_2="selected"; else $sel_2="";
+    echo "<select id='candidates_proposal_plugin_setting_mode' name='candidates_proposal_plugin_options[mode]' ><option value='1' ".$sel_1.">1</option><option value='2' ".$sel_2.">2</option></select>";
+}
+
 function candidates_proposal_plugin_setting_secs() {
     $options = get_option( 'candidates_proposal_plugin_options', array() );
     if (!array_key_exists('secs',$options)) $options['secs']=0;
@@ -212,7 +228,7 @@ jQuery(document).ready(function($)
                   data.forEach(function(item)
                   {
                     let selected = ""
-                    if (item.id == "<?php echo $options["institutions"] ?>") {
+                    if (item.id === "<?php echo $options["institutions"] ?>") {
                         selected = "selected"
                     }
                         $("#candidates_proposal_plugin_setting_institutions").append('<option value="' + item.id + '" ' + selected + '>' + escapeHtml(item.name) + '</option>' );     
