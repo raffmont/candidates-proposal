@@ -77,7 +77,7 @@ function candidates_list($data)
 
     global $wpdb;
 
-    // Remove unneeded data from paramaters
+    // Remove unneeded data from parameters
     unset($params['_wpnonce']);
     unset($params['_wp_http_referer']);
 
@@ -126,6 +126,11 @@ function candidates_list($data)
             $featured_image_src = wp_get_attachment_image_src($featured_image_id);
 
             $link = get_permalink($post_id);
+
+            $mode = get_plugin_options('mode');
+            if ($mode === "2") {
+                $votes=-1;
+            }
 
             $candidate = array(
                 'id' => $post_id,
@@ -182,10 +187,18 @@ function candidates_list_load_scripts()
     $list_header = ob_get_contents();
     ob_end_clean();
 
-    ob_start();
-    include MY_PLUGIN_PATH . '/includes/templates/candidates-list-item.html';
-    $list_item = ob_get_contents();
-    ob_end_clean();
+    $mode = get_plugin_options('mode');
+    if ($mode === "1") {
+        ob_start();
+        include MY_PLUGIN_PATH . '/includes/templates/candidates-list-item.html';
+        $list_item = ob_get_contents();
+        ob_end_clean();
+    } elseif ($mode === "2") {
+        ob_start();
+        include MY_PLUGIN_PATH . '/includes/templates/candidates-list-item-2.html';
+        $list_item = ob_get_contents();
+        ob_end_clean();
+    }
 
     ob_start();
     include MY_PLUGIN_PATH . '/includes/templates/candidates-list-footer.html';
