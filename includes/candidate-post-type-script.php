@@ -46,7 +46,11 @@ jQuery(document).ready(function($)
                 function( data )
                 {
                     console.log(data);
-                    $("#candidates_proposal_plugin_post_votes").html(data["count"]);      
+                    if (data > -1) {
+                        $("#candidates_proposal_plugin_post_votes").html(data["count"]);
+                    } else {
+                        $("#candidates_proposal_plugin_post_votes").hide();
+                    }
                 }
         );
     }
