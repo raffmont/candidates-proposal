@@ -84,10 +84,18 @@ function filter_post_content($content)
             $script = ob_get_contents();
             ob_end_clean();
 
-            ob_start();
-            include MY_PLUGIN_PATH . '/includes/templates/candidate-post-type.html';
-            $content = ob_get_contents();
-            ob_end_clean();
+            $mode = get_plugin_options('mode');
+            if ($mode === "1") {
+                ob_start();
+                include MY_PLUGIN_PATH . '/includes/templates/candidate-post-type.html';
+                $content = ob_get_contents();
+                ob_end_clean();
+            } elseif ($mode === "2") {
+                ob_start();
+                include MY_PLUGIN_PATH . '/includes/templates/candidate-post-type-2.html';
+                $content = ob_get_contents();
+                ob_end_clean();
+            }
 
             $content = str_replace("{id}",$post_id, $content);
             $content = str_replace("{role}",get_cat_name( $role_term_id ),$content);
@@ -306,22 +314,30 @@ function candidate_post_type_rest_api_init()
 
 function handle_votes($data)
 {
-      global $wpdb;
+    global $wpdb;
 
-      // Get all parameters from form
-      $params = $data->get_params();
+    $mode = get_plugin_options('mode');
+    if ($mode === "2") {
+        // Return a success message but don't disclose the vote
+        return new WP_Rest_Response(["count" => intval(-1)], 200);
+    } else {
 
-      // Get the voted post id
-      $post_id = $params["post"];
 
-      // Get the vote table name
-      $table_name = $wpdb->base_prefix . "vote_table";
+        // Get all parameters from form
+        $params = $data->get_params();
 
-      // Count the votes for post_id
-      $rowcount = $wpdb->get_var("SELECT COUNT(*) FROM $table_name WHERE post_id = $post_id;");
+        // Get the voted post id
+        $post_id = $params["post"];
 
-      // Return a success message
-      return new WP_Rest_Response(["count" => intval($rowcount)], 200);
+        // Get the vote table name
+        $table_name = $wpdb->base_prefix . "vote_table";
+
+        // Count the votes for post_id
+        $rowcount = $wpdb->get_var("SELECT COUNT(*) FROM $table_name WHERE post_id = $post_id;");
+
+        // Return a success message
+        return new WP_Rest_Response(["count" => intval($rowcount)], 200);
+    }
 }
 
 function handle_vote($data)
@@ -381,7 +397,7 @@ function handle_vote($data)
       // Apply limits on roles
         if ($secsRole>0) {
 
-        // Get the role of the uselected candidate
+        // Get the role of the selected candidate
         $role_term_id = get_post_meta($post_id, 'role')[0];
 
         // SELECT COUNT(*) FROM $table_name WHERE role = $params["role"] AND user_id = $user_id AND (NOW()-$table_name.time) < $secsRole>;
